@@ -9,6 +9,12 @@ import (
 	"github.com/frou/stdext"
 )
 
+// TODO(DH): Do a check as to whether a file at outPath exists. If it doesn't,
+// it could indicate an incorrect use of sponge (command feeding into sponge
+// is using a different file).
+// Also have a flag to suppress this check.
+// var flagForce = flag.Bool("f", false, "TODO")
+
 func main() {
 	stdext.Exit(run())
 }
