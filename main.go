@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 
 	"github.com/frou/stdext"
 )
@@ -18,9 +17,9 @@ func main() {
 }
 
 func run() error {
-	stdext.SetPreFlagsUsageMessage(fmt.Sprintf(
-		"%s soaks up the entirety of standard input and then "+
-			"wrings it into an output file.", argv0()),
+	stdext.SetPreFlagsUsageMessage(
+		fmt.Sprintf("%s soaks up the entirety of standard input and then "+
+			"wrings it into an output file.", stdext.ExecutableBasename()),
 		false,
 		"path/to/wring.into")
 
@@ -42,11 +41,8 @@ func run() error {
 		fmt.Fprintf(
 			os.Stderr,
 			"warning: output file '%s' didn't exist before writing it - "+
-				"unnecessary use of %s?\n", outPath, argv0())
+				"unnecessary use of %s?\n",
+			outPath, stdext.ExecutableBasename())
 	}
 	return err
-}
-
-func argv0() string {
-	return filepath.Base(os.Args[0])
 }
