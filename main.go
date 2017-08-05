@@ -11,17 +11,23 @@ import (
 )
 
 var flagQuiet = flag.Bool(
-	"q", false, "Don't print non-fatal warnings")
+	"q", false, "don't print non-fatal warnings")
 
 func main() {
-	flag.Parse()
 	stdext.Exit(run())
 }
 
 func run() error {
-	if flag.NArg() != 1 {
-		return fmt.Errorf("Usage: %s path/to/wring/sponge/into", argv0())
+	stdext.SetPreFlagsUsageMessage(fmt.Sprintf(
+		"%s soaks up the entirety of standard input and then "+
+			"wrings it into an output file.", argv0()),
+		false,
+		"path/to/wring.into")
+
+	if err := stdext.ParseFlagsExpectingNArgs(1); err != nil {
+		return err
 	}
+
 	var outPath = flag.Arg(0)
 	_, err := os.Stat(outPath)
 	outFileDidntExist := os.IsNotExist(err)
@@ -35,7 +41,7 @@ func run() error {
 	if err == nil && outFileDidntExist && !*flagQuiet {
 		fmt.Fprintf(
 			os.Stderr,
-			"Warning: Output file (%s) didn't exist before writing it - "+
+			"warning: output file '%s' didn't exist before writing it - "+
 				"unnecessary use of %s?\n", outPath, argv0())
 	}
 	return err
