@@ -36,6 +36,8 @@ func run() error {
 		return err
 	}
 
+	// TODO(DH): Don't overwrite the file if the sponge is empty? E.g. when formatting JSON using jq and the file has a syntax error, don't blank the file.
+
 	err = ioutil.WriteFile(outPath, buf, stdext.OwnerWritableReg)
 	if err == nil && outFileDidntExist && !*flagQuiet {
 		fmt.Fprintf(
