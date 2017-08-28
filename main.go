@@ -12,6 +12,11 @@ import (
 var flagQuiet = flag.Bool(
 	"q", false, "don't print non-fatal warnings")
 
+var allowZeroing = flag.Bool(
+	allowZeroingFlag, false, "allow creation of zero-byte output file")
+
+const allowZeroingFlag = "z"
+
 func main() {
 	stdext.Exit(run())
 }
@@ -36,7 +41,12 @@ func run() error {
 		return err
 	}
 
-	// TODO(DH): Don't overwrite the file if the sponge is empty? E.g. when formatting JSON using jq and the file has a syntax error, don't blank the file.
+	if len(buf) == 0 && !*allowZeroing {
+		return fmt.Errorf(
+			"%s: refusing to create a zero byte output file (use -%s flag to override this)",
+			stdext.ExecutableBasename(),
+			allowZeroingFlag)
+	}
 
 	err = ioutil.WriteFile(outPath, buf, stdext.OwnerWritableReg)
 	if err == nil && outFileDidntExist && !*flagQuiet {
