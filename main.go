@@ -12,10 +12,10 @@ import (
 var flagQuiet = flag.Bool(
 	"q", false, "don't print non-fatal warnings")
 
-var allowZeroing = flag.Bool(
-	allowZeroingFlag, false, "allow creation of zero-byte output file")
+var flagAllowZeroing = flag.Bool(
+	allowZeroingFlagName, false, "allow creation of zero-byte output file")
 
-const allowZeroingFlag = "z"
+const allowZeroingFlagName = "z"
 
 func main() {
 	stdext.Exit(run())
@@ -41,11 +41,11 @@ func run() error {
 		return err
 	}
 
-	if len(buf) == 0 && !*allowZeroing {
+	if len(buf) == 0 && !*flagAllowZeroing {
 		return fmt.Errorf(
 			"%s: refusing to create a zero byte output file (use -%s flag to override this)",
 			stdext.ExecutableBasename(),
-			allowZeroingFlag)
+			allowZeroingFlagName)
 	}
 
 	err = ioutil.WriteFile(outPath, buf, stdext.OwnerWritableReg)
